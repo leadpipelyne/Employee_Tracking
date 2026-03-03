@@ -42,7 +42,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow frontend to connect (local dev + production)
+# CORS - allow frontend to connect (local dev + production)
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://localhost:5174").split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -52,7 +52,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve frontend static files in production
+# Include routers BEFORE static file serving so API routes take priority
+app.include_router(auth.router)
+app.include_router(employees.router)
+app.include_router(config.router)
+app.include_router(payroll.router)
+app.include_router(audit.router)
+
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "healthy", "version": "1.0.0"}
+
+
+# Serve frontend static files in production (must come AFTER API routes)
 static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 if os.path.exists(static_dir):
     from fastapi.responses import FileResponse
@@ -65,15 +78,3 @@ if os.path.exists(static_dir):
         return FileResponse(os.path.join(static_dir, "index.html"))
 
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
-
-# Include routers
-app.include_router(auth.router)
-app.include_router(employees.router)
-app.include_router(config.router)
-app.include_router(payroll.router)
-app.include_router(audit.router)
-
-
-@app.get("/api/health")
-def health_check():
-    return {"status": "healthy", "version": "1.0.0"}
