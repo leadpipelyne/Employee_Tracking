@@ -42,14 +42,29 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow frontend to connect
+# CORS — allow frontend to connect (local dev + production)
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://localhost:5174").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve frontend static files in production
+static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+if os.path.exists(static_dir):
+    from fastapi.responses import FileResponse
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str):
+        file_path = os.path.join(static_dir, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(static_dir, "index.html"))
+
+    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
 
 # Include routers
 app.include_router(auth.router)
