@@ -42,7 +42,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow frontend to connect (local dev + production)
+# CORS - allow frontend to connect (local dev + production)
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://localhost:5174").split(",")
 app.add_middleware(
     CORSMiddleware,
