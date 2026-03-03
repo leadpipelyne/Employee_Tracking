@@ -4,8 +4,10 @@ import LoginPage from './pages/LoginPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
 import EmployeesPage from './pages/EmployeesPage';
+import EmployeeProfilePage from './pages/EmployeeProfilePage';
 import PayrollPage from './pages/PayrollPage';
 import AuditPage from './pages/AuditPage';
+import UsersPage from './pages/UsersPage';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token');
@@ -36,8 +38,10 @@ function App() {
           >
             <Route index element={<DashboardPage />} />
             <Route path="employees" element={<EmployeesPage />} />
+            <Route path="employees/:id" element={<EmployeeProfilePage />} />
             <Route path="payroll" element={<PayrollPage />} />
             <Route path="audit" element={<AuditPage />} />
+            <Route path="users" element={<UsersPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
