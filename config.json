@@ -1,0 +1,44 @@
+{
+  "month": "February",
+  "year": 2026,
+  "working_days": 20,
+  "full_day_hours": 9,
+  "threshold_hours_per_day": 8.25,
+  "paid_holidays_per_month": 2,
+
+  "insightful_api": {
+    "base_url": "https://app.insightful.io/api/v1",
+    "token": "YOUR_INSIGHTFUL_JWT_TOKEN_HERE"
+  },
+
+  "file_paths": {
+    "salary_sheet": "./data/SalarySheet.xlsx",
+    "leave_requests": "./data/LeaveRequests.xlsx",
+    "output_report": "./output/Salary_Report.xlsx"
+  },
+
+  "exceptions": {
+    "fixed_salary": [
+      "FLOID",
+      "CARLA",
+      "Atisha",
+      "Sneha",
+      "VINITA SHRIWASTAV",
+      "Rakhi Devi",
+      "Ronak"
+    ],
+    "full_month_absent": [
+      "Jyoti"
+    ],
+    "name_mappings": {
+      "Ajith Kumar": "ajit kumar"
+    },
+    "manual_hour_adjustments": {
+      "Heena": 17
+    },
+    "manual_leave_adjustments": {
+      "Chandni": 5,
+      "Heena": 3
+    }
+  }
+}
