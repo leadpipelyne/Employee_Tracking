@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Environment
+backend/.env
+.env
+*.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+node_modules/
+
+# Data files (sensitive)
+data/
+*.xlsx
+*.json
+!config.template.json
+!package.json
+!package-lock.json
+!tsconfig.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/tmp/

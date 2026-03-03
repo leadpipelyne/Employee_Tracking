@@ -1,0 +1,30 @@
+name: employee-tracking
+region: nyc
+
+services:
+  - name: web
+    dockerfile_path: Dockerfile
+    github:
+      repo: leadpipelyne/Employee_Tracking
+      branch: main
+      deploy_on_push: true
+    http_port: 8000
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: change-this-to-a-random-string-in-production
+      - key: CORS_ORIGINS
+        scope: RUN_TIME
+        value: ${APP_URL}
+
+databases:
+  - name: db
+    engine: PG
+    production: false
+    version: "16"
