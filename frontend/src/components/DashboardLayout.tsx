@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Button, Typography, Space } from 'antd';
+import { Layout, Menu, Button, Typography, Space, Tag } from 'antd';
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -8,6 +8,7 @@ import {
   AuditOutlined,
   LogoutOutlined,
   UserOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { getMe } from '../services/api';
 
@@ -27,12 +28,21 @@ export default function DashboardLayout() {
     });
   }, [navigate]);
 
-  const menuItems = [
+  const menuItems: any[] = [
     { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
     { key: '/employees', icon: <TeamOutlined />, label: 'Employees' },
     { key: '/payroll', icon: <DollarOutlined />, label: 'Payroll' },
     { key: '/audit', icon: <AuditOutlined />, label: 'Audit Log' },
   ];
+
+  // Admin-only: User Management
+  if (user?.role === 'admin') {
+    menuItems.push({ key: '/users', icon: <SettingOutlined />, label: 'User Management' });
+  }
+
+  const ROLE_COLORS: Record<string, string> = {
+    admin: 'red', hr: 'blue', manager: 'orange', viewer: 'default',
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -80,7 +90,8 @@ export default function DashboardLayout() {
           </Text>
           <Space>
             <UserOutlined />
-            <Text>{user?.name} ({user?.role})</Text>
+            <Text>{user?.name}</Text>
+            <Tag color={ROLE_COLORS[user?.role] || 'default'}>{user?.role?.toUpperCase()}</Tag>
             <Button
               type="text"
               icon={<LogoutOutlined />}

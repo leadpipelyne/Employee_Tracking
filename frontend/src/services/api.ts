@@ -85,6 +85,31 @@ export const addCompensation = (data: any) =>
 export const getCompensationHistory = (employeeId: number) =>
   api.get(`/payroll/compensation/${employeeId}`);
 
+// Employee Profile
+export const getEmployeeProfile = (id: number) =>
+  api.get(`/employees/${id}/profile`);
+
+// Bulk Upload
+export const bulkUploadEmployees = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return api.post('/employees/bulk-upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
+// User Management
+export const getUsers = () => api.get('/users');
+
+export const createUser = (data: { email: string; name: string; password: string; role: string }) =>
+  api.post('/users', data);
+
+export const updateUser = (id: number, params: { role?: string; name?: string; is_active?: boolean }) =>
+  api.patch(`/users/${id}`, null, { params });
+
+export const resetUserPassword = (id: number, newPassword: string) =>
+  api.post(`/users/${id}/reset-password`, null, { params: { new_password: newPassword } });
+
 // Audit
 export const getAuditLog = (params?: any) =>
   api.get('/audit', { params });

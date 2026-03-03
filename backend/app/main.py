@@ -7,7 +7,7 @@ import os
 from app.core.database import engine, Base, SessionLocal
 from app.core.auth import get_password_hash
 from app.models.models import User, UserRole
-from app.api.endpoints import auth, employees, config, payroll, audit
+from app.api.endpoints import auth, employees, config, payroll, audit, users
 
 
 @asynccontextmanager
@@ -52,7 +52,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve frontend static files in production
+# Include API routers FIRST (before static file serving)
+app.include_router(auth.router)
+app.include_router(employees.router)
+app.include_router(config.router)
+app.include_router(payroll.router)
+app.include_router(audit.router)
+app.include_router(users.router)
+
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "healthy", "version": "2.0.0"}
+
+
+# Serve frontend static files in production (AFTER API routers)
 static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 if os.path.exists(static_dir):
     from fastapi.responses import FileResponse
@@ -65,15 +79,3 @@ if os.path.exists(static_dir):
         return FileResponse(os.path.join(static_dir, "index.html"))
 
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
-
-# Include routers
-app.include_router(auth.router)
-app.include_router(employees.router)
-app.include_router(config.router)
-app.include_router(payroll.router)
-app.include_router(audit.router)
-
-
-@app.get("/api/health")
-def health_check():
-    return {"status": "healthy", "version": "1.0.0"}
